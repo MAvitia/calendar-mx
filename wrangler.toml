@@ -1,19 +1,20 @@
 name = "calendar-mx"
 compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = ".svelte-kit/cloudflare"
 
 [[d1_databases]]
 binding = "DB"
 database_name = "calendar_public"
-database_id = "YOUR_PUBLIC_DB_ID"
+database_id = "7d839c83-dea9-41a6-a484-c42493462548"
 
 [[kv_namespaces]]
 binding = "KV"
-id = "YOUR_KV_ID"
+id = "a50bce8fabf54fb2a3d06ada1504d590"
 
 [[kv_namespaces]]
 binding = "TENANT_KV"
-id = "YOUR_TENANT_KV_ID"
+id = "cfc62ba2d631484894ee1cf64a8b0534"
 
 [vars]
 APP_URL = "https://calendar.mx"
