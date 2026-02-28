@@ -118,7 +118,7 @@
 					</span>
 					{#if eventType.max_attendees > 1}
 						<span class="text-xs px-2 py-0.5 rounded-full bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-400">
-							{locale === 'es' ? 'Clase grupal' : 'Group class'}
+							{locale === 'es' ? 'Evento grupal' : 'Group event'}
 						</span>
 					{/if}
 				</div>

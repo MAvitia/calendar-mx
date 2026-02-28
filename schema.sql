@@ -3,7 +3,7 @@
 -- Extends CloudMeet with tenant_id columns for logical isolation
 -- ============================================================
 
--- Tenants (Pro tier gyms/businesses)
+-- Tenants (Pro tier businesses/teams)
 CREATE TABLE IF NOT EXISTS tenants (
     id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
     name TEXT NOT NULL,
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS users (
     outlook_refresh_token TEXT,
     timezone TEXT DEFAULT 'America/Mexico_City',
     locale TEXT DEFAULT 'es',
-    role TEXT DEFAULT 'user' CHECK (role IN ('owner', 'admin', 'trainer', 'client', 'user')),
+    role TEXT DEFAULT 'user' CHECK (role IN ('owner', 'admin', 'member', 'user')),
     plan TEXT DEFAULT 'free' CHECK (plan IN ('free', 'pro')),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     sync_token TEXT,
@@ -59,7 +59,7 @@ CREATE INDEX idx_users_slug ON users(slug);
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_tenant ON users(tenant_id);
 
--- Event types (classes, sessions, appointments)
+-- Event types (meetings, appointments, group events)
 CREATE TABLE IF NOT EXISTS event_types (
     id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
     tenant_id TEXT,

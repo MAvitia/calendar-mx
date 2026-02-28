@@ -58,7 +58,7 @@ export const POST: RequestHandler = async ({ request, platform, locals }) => {
 				.first();
 		} else if (tenant) {
 			user = await db
-				.prepare(`SELECT id, email, name, slug, contact_email, settings, brand_color, outlook_refresh_token FROM users WHERE tenant_id = ? AND role IN ('owner', 'trainer') LIMIT 1`)
+				.prepare(`SELECT id, email, name, slug, contact_email, settings, brand_color, outlook_refresh_token FROM users WHERE tenant_id = ? AND role IN ('owner', 'admin', 'member') LIMIT 1`)
 				.bind(tenant.id)
 				.first();
 		} else {

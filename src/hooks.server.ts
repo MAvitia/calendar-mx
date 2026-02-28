@@ -10,24 +10,43 @@ import { getCurrentUser } from '$lib/server/auth';
 export const handle: Handle = async ({ event, resolve }) => {
 	const env = event.platform?.env;
 	if (!env?.DB) {
-		return resolve(event);
+		event.locals.tenant = null;
+		event.locals.userId = null;
+		event.locals.locale = 'es';
+		event.locals.db = null as any;
+		return resolve(event, {
+			transformPageChunk: ({ html }) =>
+				html.replace('%lang%', 'es').replace('%theme%', '')
+		});
 	}
 
 	event.locals.db = env.DB;
 
-	const host = event.request.headers.get('host') || '';
-	const appDomain = env.APP_DOMAIN || 'calendar.mx';
+	try {
+		const host = event.request.headers.get('host') || '';
+		const appDomain = env.APP_DOMAIN || 'calendar.mx';
+		if (env.TENANT_KV) {
+			event.locals.tenant = await resolveTenant(host, appDomain, env.TENANT_KV, env.DB);
+		} else {
+			event.locals.tenant = null;
+		}
+	} catch (e) {
+		console.error('Tenant resolution error:', e);
+		event.locals.tenant = null;
+	}
 
-	const tenant = await resolveTenant(host, appDomain, env.TENANT_KV, env.DB);
-	event.locals.tenant = tenant;
-
-	const session = await getCurrentUser(event);
-	event.locals.userId = session?.userId ?? null;
+	try {
+		const session = await getCurrentUser(event);
+		event.locals.userId = session?.userId ?? null;
+	} catch (e) {
+		console.error('Auth error:', e);
+		event.locals.userId = null;
+	}
 
 	const cookieLocale = event.cookies.get('locale');
 	event.locals.locale = (cookieLocale === 'en' || cookieLocale === 'es')
 		? cookieLocale
-		: (tenant?.locale === 'en' ? 'en' : 'es');
+		: (event.locals.tenant?.locale === 'en' ? 'en' : 'es');
 
 	const response = await resolve(event, {
 		transformPageChunk: ({ html }) => {

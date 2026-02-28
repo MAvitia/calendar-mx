@@ -15,7 +15,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	let user;
 	if (tenant) {
 		user = await db
-			.prepare(`SELECT id, name, slug, profile_image, brand_color, timezone, settings FROM users WHERE tenant_id = ? AND role IN ('owner', 'trainer') LIMIT 1`)
+			.prepare(`SELECT id, name, slug, profile_image, brand_color, timezone, settings FROM users WHERE tenant_id = ? AND role IN ('owner', 'admin', 'member') LIMIT 1`)
 			.bind(tenant.id)
 			.first<{ id: string; name: string; slug: string; profile_image: string | null; brand_color: string | null; timezone: string; settings: string | null }>();
 	} else {

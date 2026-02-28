@@ -26,7 +26,7 @@ export interface TenantKVEntry {
 
 /**
  * Resolve tenant from the incoming request Host header.
- * gym1.calendar.mx → lookup "gym1" in TENANT_KV → return TenantContext
+ * acme.calendar.mx → lookup "acme" in TENANT_KV → return TenantContext
  * calendar.mx → return null (free tier / public)
  */
 export async function resolveTenant(

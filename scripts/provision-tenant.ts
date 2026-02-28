@@ -4,7 +4,7 @@
  * 2. KV entry mapping subdomain → tenant_id
  * 3. DNS CNAME record for subdomain.calendar.mx
  *
- * Usage: npx tsx scripts/provision-tenant.ts --name "GymOne" --subdomain "gym1" --email "owner@gym.com"
+ * Usage: npx tsx scripts/provision-tenant.ts --name "Acme Corp" --subdomain "acme" --email "owner@acme.com"
  *
  * Requires env vars: CF_API_TOKEN, CF_ACCOUNT_ID, CF_ZONE_ID, D1_DATABASE_ID, TENANT_KV_ID
  */
@@ -28,7 +28,7 @@ function parseArgs(): ProvisionArgs {
 	}
 
 	if (!parsed.name || !parsed.subdomain || !parsed.email) {
-		console.error('Usage: npx tsx scripts/provision-tenant.ts --name "GymOne" --subdomain "gym1" --email "owner@gym.com"');
+		console.error('Usage: npx tsx scripts/provision-tenant.ts --name "Acme Corp" --subdomain "acme" --email "owner@acme.com"');
 		process.exit(1);
 	}
 

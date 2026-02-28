@@ -14,7 +14,7 @@
 	<main class="animate-fade-in">
 		<!-- Hero -->
 		<section class="relative overflow-hidden">
-			<div class="absolute inset-0 bg-gradient-to-br from-emerald-50 via-sky-50 to-amber-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900"></div>
+			<div class="absolute inset-0 bg-gradient-to-br from-emerald-50 via-sky-50 to-white dark:from-gray-900 dark:via-gray-900 dark:to-gray-900"></div>
 			<div class="relative max-w-5xl mx-auto px-4 py-20 sm:py-28 text-center">
 				<h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 dark:text-white">
 					{t(locale, 'landing.hero')}
@@ -42,13 +42,13 @@
 			</h2>
 			<div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
 				{#each [
-					{ icon: '📅', title: t(locale, 'landing.featCalendar'), desc: t(locale, 'landing.featCalendarDesc'), color: 'from-emerald-500 to-teal-500' },
-					{ icon: '⚡', title: t(locale, 'landing.featBooking'), desc: t(locale, 'landing.featBookingDesc'), color: 'from-sky-500 to-blue-500' },
-					{ icon: '👥', title: t(locale, 'landing.featMultiUser'), desc: t(locale, 'landing.featMultiUserDesc'), color: 'from-amber-500 to-orange-500' },
-					{ icon: '🎨', title: t(locale, 'landing.featBranding'), desc: t(locale, 'landing.featBrandingDesc'), color: 'from-purple-500 to-pink-500' },
+					{ icon: '📅', title: t(locale, 'landing.featCalendar'), desc: t(locale, 'landing.featCalendarDesc'), gradient: 'from-emerald-500 to-teal-500' },
+					{ icon: '⚡', title: t(locale, 'landing.featBooking'), desc: t(locale, 'landing.featBookingDesc'), gradient: 'from-sky-500 to-blue-500' },
+					{ icon: '👥', title: t(locale, 'landing.featMultiUser'), desc: t(locale, 'landing.featMultiUserDesc'), gradient: 'from-violet-500 to-purple-500' },
+					{ icon: '🎨', title: t(locale, 'landing.featBranding'), desc: t(locale, 'landing.featBrandingDesc'), gradient: 'from-rose-500 to-pink-500' },
 				] as feat}
 					<div class="p-6 rounded-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:shadow-lg transition-shadow">
-						<div class="w-10 h-10 rounded-xl bg-gradient-to-br {feat.color} flex items-center justify-center text-white text-lg mb-4">
+						<div class="w-10 h-10 rounded-xl bg-gradient-to-br {feat.gradient} flex items-center justify-center text-white text-lg mb-4">
 							{feat.icon}
 						</div>
 						<h3 class="font-semibold text-gray-900 dark:text-white mb-2">{feat.title}</h3>
@@ -102,7 +102,7 @@
 
 		<!-- Footer -->
 		<footer class="border-t border-gray-200 dark:border-gray-800 py-8 text-center text-sm text-gray-500 dark:text-gray-500">
-			<p>Calendar.mx &mdash; {locale === 'es' ? 'Hecho con' : 'Built with'} Cloudflare Workers, D1 & Pages</p>
+			<p>Calendar.mx &mdash; {locale === 'es' ? 'Agenda profesional' : 'Professional scheduling'}</p>
 		</footer>
 	</main>
 
@@ -132,14 +132,14 @@
 								{#if et.description}
 									<p class="text-sm text-gray-600 dark:text-gray-400 mt-2 line-clamp-2">{et.description}</p>
 								{/if}
-								{#if et.trainer_name}
-									<div class="flex items-center gap-2 mt-3">
-										{#if et.trainer_image}
-											<img src={et.trainer_image} alt="" class="w-5 h-5 rounded-full" />
-										{/if}
-										<span class="text-xs text-gray-500 dark:text-gray-500">{et.trainer_name}</span>
-									</div>
-								{/if}
+							{#if et.host_name}
+								<div class="flex items-center gap-2 mt-3">
+									{#if et.host_image}
+										<img src={et.host_image} alt="" class="w-5 h-5 rounded-full" />
+									{/if}
+									<span class="text-xs text-gray-500 dark:text-gray-500">{et.host_name}</span>
+								</div>
+							{/if}
 							</div>
 						</div>
 					</a>

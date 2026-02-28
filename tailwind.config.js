@@ -20,7 +20,7 @@ export default {
           800: 'var(--brand-800, #065f46)',
           900: 'var(--brand-900, #064e3b)',
         },
-        wellness: {
+        accent: {
           green: '#10b981',
           blue: '#0ea5e9',
           orange: '#f59e0b',

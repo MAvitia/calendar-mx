@@ -35,7 +35,7 @@ export const GET: RequestHandler = async ({ url, platform, locals }) => {
 			.first<{ id: string; timezone: string; settings: string | null; outlook_refresh_token: string | null }>();
 	} else if (tenant) {
 		targetUser = await db
-			.prepare(`SELECT id, timezone, settings, outlook_refresh_token FROM users WHERE tenant_id = ? AND role IN ('owner', 'trainer') LIMIT 1`)
+			.prepare(`SELECT id, timezone, settings, outlook_refresh_token FROM users WHERE tenant_id = ? AND role IN ('owner', 'admin', 'member') LIMIT 1`)
 			.bind(tenant.id)
 			.first<{ id: string; timezone: string; settings: string | null; outlook_refresh_token: string | null }>();
 	} else {

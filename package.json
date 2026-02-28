@@ -1,7 +1,7 @@
 {
   "name": "calendar-mx",
   "version": "1.0.0",
-  "description": "Multi-tenant SaaS calendar for gym bookings — powered by Cloudflare Workers, D1, Pages",
+  "description": "Multi-tenant SaaS scheduling calendar — powered by Cloudflare Workers, D1, Pages",
   "type": "module",
   "scripts": {
     "dev": "vite dev",
@@ -15,7 +15,7 @@
     "tenant:provision": "npx tsx scripts/provision-tenant.ts",
     "prebuild": "node scripts/prebuild.js"
   },
-  "keywords": ["calendar", "saas", "multi-tenant", "cloudflare", "gym", "booking", "sveltekit"],
+  "keywords": ["calendar", "saas", "multi-tenant", "cloudflare", "scheduling", "booking", "sveltekit"],
   "license": "MIT",
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250927.0",

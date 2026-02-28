@@ -1,7 +1,7 @@
 /**
  * Landing / Home page
  * - Free (calendar.mx): Show landing page with pricing
- * - Pro subdomain (gym1.calendar.mx): Show tenant's public event types
+ * - Pro subdomain (acme.calendar.mx): Show tenant's public event types
  */
 
 import type { PageServerLoad } from './$types';
@@ -13,7 +13,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 		const eventTypes = await db
 			.prepare(
 				`SELECT et.id, et.name, et.slug, et.duration_minutes as duration, et.description,
-				        et.color, et.max_attendees, u.name as trainer_name, u.profile_image as trainer_image
+				        et.color, et.max_attendees, u.name as host_name, u.profile_image as host_image
 				 FROM event_types et
 				 JOIN users u ON et.user_id = u.id
 				 WHERE et.tenant_id = ? AND et.is_active = 1

@@ -10,7 +10,7 @@
 	$: plan = form?.plan || (data as any).plan || 'free';
 
 	let subdomain = '';
-	let gymName = '';
+	let businessName = '';
 </script>
 
 <main class="max-w-lg mx-auto px-4 py-16 animate-fade-in">
@@ -47,12 +47,12 @@
 		{#if plan === 'pro'}
 			<div class="space-y-4 mb-6">
 				<div>
-					<label for="gymName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-						{t(locale, 'tenant.gymName')}
+					<label for="businessName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+						{t(locale, 'tenant.businessName')}
 					</label>
-					<input type="text" id="gymName" name="gymName" bind:value={gymName} required
+					<input type="text" id="businessName" name="businessName" bind:value={businessName} required
 						class="w-full rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:ring-emerald-500 focus:border-emerald-500"
-						placeholder="FitZone Gym" />
+						placeholder={locale === 'es' ? 'Mi Empresa' : 'My Business'} />
 				</div>
 				<div>
 					<label for="subdomain" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
@@ -62,7 +62,7 @@
 						<input type="text" id="subdomain" name="subdomain" bind:value={subdomain} required
 							pattern="[a-z0-9][a-z0-9-]*[a-z0-9]" minlength="3" maxlength="50"
 							class="flex-1 rounded-l-xl border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:ring-emerald-500 focus:border-emerald-500"
-							placeholder="fitzone" />
+							placeholder="mybusiness" />
 						<span class="px-3 py-2 bg-gray-100 dark:bg-gray-700 border border-l-0 border-gray-300 dark:border-gray-600 rounded-r-xl text-sm text-gray-500 dark:text-gray-400">
 							.calendar.mx
 						</span>

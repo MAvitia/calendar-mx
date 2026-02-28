@@ -1,13 +1,13 @@
-# Calendar.mx — Multi-Tenant SaaS Calendar
+# Calendar.mx — Multi-Tenant SaaS Scheduling
 
-Multi-tenant calendar for gym bookings and appointments, built on Cloudflare Workers + D1 + Pages. Forked from [CloudMeet](https://github.com/dennisklappe/CloudMeet).
+Multi-tenant scheduling calendar (like Calendly), built on Cloudflare Workers + D1 + Pages. Forked from [CloudMeet](https://github.com/dennisklappe/CloudMeet).
 
 ## Architecture
 
 ```
 calendar.mx          → Free tier (shared D1, personal scheduling)
-gym1.calendar.mx     → Pro tenant (isolated by tenant_id, branded)
-gym2.calendar.mx     → Pro tenant (own branding, team, classes)
+acme.calendar.mx     → Pro tenant (isolated by tenant_id, branded)
+agency.calendar.mx   → Pro tenant (own branding, team, group events)
 ```
 
 **Stack:** SvelteKit + Cloudflare Pages Adapter + D1 + KV + Workers
@@ -61,11 +61,11 @@ gym2.calendar.mx     → Pro tenant (own branding, team, classes)
 
 | Area | CloudMeet (Single-Tenant) | Calendar.mx (Multi-Tenant) |
 |------|---------------------------|---------------------------|
-| Users | Single admin user | Multi-user with roles (owner/admin/trainer/client) |
+| Users | Single admin user | Multi-user with roles (owner/admin/member) |
 | Data isolation | None (one user) | `tenant_id` column on all tables |
 | Auth | Google OAuth → admin only | Google OAuth → any user, JWT includes `tenant_id` |
 | Routing | Single domain | Host-based: subdomain → KV lookup → tenant context |
-| Event types | Personal meetings | Classes with `max_attendees`, group bookings |
+| Event types | Personal meetings | Group events with `max_attendees` support |
 | Branding | Single brand_color | Per-tenant logo, colors, CSS |
 | Payments | None | Stripe subscriptions for Pro tier |
 | i18n | English only | Spanish + English toggle |
@@ -98,11 +98,7 @@ wrangler kv namespace create TENANT_KV
 # Note the IDs and update wrangler.toml
 ```
 
-### 4. Update `wrangler.toml`
-
-Replace `YOUR_*_ID` placeholders with the actual IDs from step 3.
-
-### 5. Initialize Database
+### 4. Initialize Database
 
 ```bash
 # Local development
@@ -112,7 +108,7 @@ npm run db:init
 npm run db:init:remote
 ```
 
-### 6. Set Secrets
+### 5. Set Secrets
 
 ```bash
 wrangler pages secret put GOOGLE_CLIENT_ID
@@ -125,40 +121,27 @@ wrangler pages secret put CF_ACCOUNT_ID
 wrangler pages secret put CF_ZONE_ID
 ```
 
-### 7. Deploy
+### 6. Deploy
 
 ```bash
 npm run deploy
 ```
 
-### 8. Connect to GitHub (auto-deploy)
-
-1. Go to Cloudflare Dashboard → Pages → Create Project
-2. Connect your GitHub repo
-3. Build command: `npm run build`
-4. Build output: `.svelte-kit/cloudflare`
-5. Add all environment variables / secrets
-6. Set custom domain: `calendar.mx`
-7. Enable wildcard subdomain: `*.calendar.mx`
-
-### 9. Provision a Pro Tenant
+### 7. Provision a Pro Tenant
 
 ```bash
-# Via script
 CF_API_TOKEN=xxx CF_ACCOUNT_ID=xxx CF_ZONE_ID=xxx D1_DATABASE_ID=xxx TENANT_KV_ID=xxx \
-  npx tsx scripts/provision-tenant.ts --name "GymOne" --subdomain "gym1" --email "owner@gym.com"
-
-# Or via Stripe (automatic on checkout.session.completed webhook)
+  npx tsx scripts/provision-tenant.ts --name "Acme Corp" --subdomain "acme" --email "owner@acme.com"
 ```
 
 ## Tenant Resolution Flow
 
 ```
-Request: GET https://gym1.calendar.mx/dashboard
+Request: GET https://acme.calendar.mx/dashboard
   │
-  ├─ _middleware.ts: Extract "gym1" from Host header
+  ├─ _middleware.ts: Extract "acme" from Host header
   │
-  ├─ hooks.server.ts: TENANT_KV.get("tenant:gym1") → { tenant_id }
+  ├─ hooks.server.ts: TENANT_KV.get("tenant:acme") → { tenant_id }
   │                    DB.query("SELECT * FROM tenants WHERE id = ?")
   │                    → locals.tenant = { id, name, brand_color, ... }
   │
@@ -176,10 +159,10 @@ npm run dev
 Visit `http://localhost:5173` for the main app. To test tenant subdomains locally, add to your hosts file:
 
 ```
-127.0.0.1 gym1.localhost
+127.0.0.1 acme.localhost
 ```
 
-Then visit `http://gym1.localhost:5173`.
+Then visit `http://acme.localhost:5173`.
 
 ## License
 

@@ -26,13 +26,13 @@ export const actions: Actions = {
 		const form = await request.formData();
 		const plan = form.get('plan') as string;
 		const subdomain = (form.get('subdomain') as string || '').toLowerCase().trim();
-		const gymName = (form.get('gymName') as string || '').trim();
+		const businessName = (form.get('businessName') as string || '').trim();
 
 		if (plan === 'pro') {
 			if (!subdomain || !isValidSlug(subdomain)) {
 				return { error: 'Invalid subdomain. Use 3-50 lowercase letters, numbers, and hyphens.', plan };
 			}
-			if (!gymName) {
+			if (!businessName) {
 				return { error: 'Business name is required.', plan };
 			}
 
@@ -48,7 +48,7 @@ export const actions: Actions = {
 			const appUrl = env.APP_URL || 'https://calendar.mx';
 			const session = await createCheckoutSession(env.STRIPE_SECRET_KEY, {
 				customerEmail: '',
-				tenantName: gymName,
+				tenantName: businessName,
 				subdomain,
 				successUrl: `${appUrl}/signup/success?session_id={CHECKOUT_SESSION_ID}`,
 				cancelUrl: `${appUrl}/signup?plan=pro`,

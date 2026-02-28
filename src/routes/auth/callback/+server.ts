@@ -20,19 +20,23 @@ export const GET: RequestHandler = async ({ url, platform, cookies }) => {
 
 	let stateData: { csrf: string; tenantId: string | null; returnTo: string };
 	try {
-		stateData = JSON.parse(atob(state));
+		stateData = JSON.parse(atob(decodeURIComponent(state)));
 	} catch {
 		throw error(400, 'Invalid state parameter');
 	}
 
-	const storedState = await env.KV.get(`oauth_state:${stateData.csrf}`);
-	if (!storedState) throw error(400, 'Expired or invalid state');
-	await env.KV.delete(`oauth_state:${stateData.csrf}`);
+	if (env.KV) {
+		const storedState = await env.KV.get(`oauth_state:${stateData.csrf}`);
+		if (!storedState) throw error(400, 'Expired or invalid state');
+		await env.KV.delete(`oauth_state:${stateData.csrf}`);
+	}
 
 	const clientId = env.GOOGLE_CLIENT_ID;
 	const clientSecret = env.GOOGLE_CLIENT_SECRET;
 	const appUrl = env.APP_URL;
-	if (!clientId || !clientSecret || !appUrl) throw error(500, 'Missing OAuth configuration');
+	if (!clientId || !clientSecret || !appUrl) {
+		throw error(500, `Missing OAuth config: clientId=${!!clientId} clientSecret=${!!clientSecret} appUrl=${!!appUrl}`);
+	}
 
 	try {
 		const redirectUri = `${appUrl}/auth/callback`;
@@ -40,17 +44,26 @@ export const GET: RequestHandler = async ({ url, platform, cookies }) => {
 		const userInfo = await getGoogleUserInfo(tokens.access_token);
 
 		const db = env.DB;
-		const tenantId = stateData.tenantId;
+		const tenantId = stateData.tenantId || null;
 
-		let user = await db
-			.prepare('SELECT id, role, tenant_id FROM users WHERE email = ? AND (tenant_id = ? OR (tenant_id IS NULL AND ? IS NULL))')
-			.bind(userInfo.email, tenantId, tenantId)
-			.first<{ id: string; role: string; tenant_id: string | null }>();
+		let user: { id: string; role: string; tenant_id: string | null } | null;
+
+		if (tenantId) {
+			user = await db
+				.prepare('SELECT id, role, tenant_id FROM users WHERE email = ? AND tenant_id = ?')
+				.bind(userInfo.email, tenantId)
+				.first();
+		} else {
+			user = await db
+				.prepare('SELECT id, role, tenant_id FROM users WHERE email = ? AND tenant_id IS NULL')
+				.bind(userInfo.email)
+				.first();
+		}
 
 		if (!user) {
 			const userId = crypto.randomUUID();
-			const slug = userInfo.email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '');
-			const role = tenantId ? 'client' : 'user';
+			const slug = userInfo.email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '') || 'user';
+			const role = tenantId ? 'member' : 'user';
 			const plan = tenantId ? 'pro' : 'free';
 
 			await db
@@ -71,7 +84,12 @@ export const GET: RequestHandler = async ({ url, platform, cookies }) => {
 				.run();
 		}
 
-		const sessionToken = await createSessionToken(user.id, user.tenant_id, user.role, env.JWT_SECRET);
+		const sessionToken = await createSessionToken(
+			user.id,
+			user.tenant_id || null,
+			user.role || 'user',
+			env.JWT_SECRET
+		);
 
 		cookies.set('session', sessionToken, {
 			path: '/',
@@ -85,6 +103,6 @@ export const GET: RequestHandler = async ({ url, platform, cookies }) => {
 	} catch (err: any) {
 		if (err?.status && err?.location) throw err;
 		console.error('OAuth callback error:', err);
-		throw error(500, `Authentication failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+		throw error(500, `Authentication failed: ${err instanceof Error ? err.message : String(err)}`);
 	}
 };
