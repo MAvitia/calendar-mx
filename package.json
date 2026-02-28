@@ -1,0 +1,42 @@
+{
+  "name": "calendar-mx",
+  "version": "1.0.0",
+  "description": "Multi-tenant SaaS calendar for gym bookings — powered by Cloudflare Workers, D1, Pages",
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "npm run build && wrangler pages dev .svelte-kit/cloudflare",
+    "deploy": "npm run build && wrangler pages deploy .svelte-kit/cloudflare --project-name=calendar-mx",
+    "db:init": "wrangler d1 execute calendar_public --local --file=./schema.sql",
+    "db:init:remote": "wrangler d1 execute calendar_public --file=./schema.sql",
+    "db:migrate": "wrangler d1 execute calendar_public --local --file=./migrations/0001_multi_tenant.sql",
+    "db:migrate:remote": "wrangler d1 execute calendar_public --file=./migrations/0001_multi_tenant.sql",
+    "tenant:provision": "npx tsx scripts/provision-tenant.ts",
+    "prebuild": "node scripts/prebuild.js"
+  },
+  "keywords": ["calendar", "saas", "multi-tenant", "cloudflare", "gym", "booking", "sveltekit"],
+  "license": "MIT",
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250927.0",
+    "@sveltejs/adapter-cloudflare": "^7.2.3",
+    "@sveltejs/kit": "^2.49.5",
+    "@sveltejs/vite-plugin-svelte": "^6.2.1",
+    "@types/validator": "^13.15.10",
+    "svelte": "^5.39.6",
+    "tsx": "^4.19.0",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.7",
+    "wrangler": "^4.60.0"
+  },
+  "dependencies": {
+    "@tailwindcss/forms": "^0.5.10",
+    "@tailwindcss/typography": "^0.5.19",
+    "autoprefixer": "^10.4.21",
+    "isomorphic-dompurify": "^2.18.0",
+    "postcss": "^8.5.6",
+    "stripe": "^17.5.0",
+    "tailwindcss": "^3.4.18",
+    "validator": "^13.15.23"
+  }
+}

@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	:root {
+		--brand-50: #ecfdf5;
+		--brand-100: #d1fae5;
+		--brand-200: #a7f3d0;
+		--brand-300: #6ee7b7;
+		--brand-400: #34d399;
+		--brand-500: #10b981;
+		--brand-600: #059669;
+		--brand-700: #047857;
+		--brand-800: #065f46;
+		--brand-900: #064e3b;
+	}
+
+	.dark {
+		--brand-50: #064e3b;
+		--brand-100: #065f46;
+		--brand-200: #047857;
+		--brand-300: #059669;
+		--brand-400: #10b981;
+		--brand-500: #34d399;
+		--brand-600: #6ee7b7;
+		--brand-700: #a7f3d0;
+		--brand-800: #d1fae5;
+		--brand-900: #ecfdf5;
+	}
+}
+
+@layer utilities {
+	.animate-fade-in {
+		animation: fadeIn 0.3s ease-in-out;
+	}
+
+	@keyframes fadeIn {
+		from { opacity: 0; transform: translateY(4px); }
+		to { opacity: 1; transform: translateY(0); }
+	}
+
+	.scrollbar-thin {
+		scrollbar-width: thin;
+		scrollbar-color: #d1d5db transparent;
+	}
+	.dark .scrollbar-thin {
+		scrollbar-color: #4b5563 transparent;
+	}
+}
