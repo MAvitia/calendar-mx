@@ -97,10 +97,12 @@ export async function resolveTenant(
  * Build a tenant-scoped WHERE clause fragment.
  * For pro tenants: "AND tenant_id = ?"
  * For free tier: "AND tenant_id IS NULL"
+ * Pass an optional table alias for JOINs (e.g. 'b' → 'b.tenant_id').
  */
-export function tenantWhere(tenant: TenantContext | null): { clause: string; binds: string[] } {
+export function tenantWhere(tenant: TenantContext | null, alias?: string): { clause: string; binds: string[] } {
+	const col = alias ? `${alias}.tenant_id` : 'tenant_id';
 	if (tenant) {
-		return { clause: 'AND tenant_id = ?', binds: [tenant.id] };
+		return { clause: `AND ${col} = ?`, binds: [tenant.id] };
 	}
-	return { clause: 'AND tenant_id IS NULL', binds: [] };
+	return { clause: `AND ${col} IS NULL`, binds: [] };
 }

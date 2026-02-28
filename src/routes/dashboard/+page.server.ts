@@ -36,6 +36,7 @@ export const load: PageServerLoad = async (event) => {
 		.bind(user.id, ...tw.binds)
 		.all();
 
+	const twb = tenantWhere(tenant, 'b');
 	const recentBookings = await db
 		.prepare(
 			`SELECT b.id, b.start_time, b.end_time, b.attendee_name, b.attendee_email,
@@ -43,11 +44,11 @@ export const load: PageServerLoad = async (event) => {
 			        et.name as event_type_name, et.duration_minutes, et.color as event_color
 			 FROM bookings b
 			 JOIN event_types et ON b.event_type_id = et.id
-			 WHERE b.user_id = ? ${tw.clause} AND b.start_time >= datetime('now')
+			 WHERE b.user_id = ? ${twb.clause} AND b.start_time >= datetime('now')
 			 ORDER BY b.start_time ASC
 			 LIMIT 20`
 		)
-		.bind(user.id, ...tw.binds)
+		.bind(user.id, ...twb.binds)
 		.all();
 
 	const stats = await db
@@ -82,5 +83,6 @@ export const load: PageServerLoad = async (event) => {
 		teamMembers,
 		tenant,
 		appUrl,
+		locale: event.locals.locale,
 	};
 };
